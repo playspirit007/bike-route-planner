@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: bike-route-planner
+  data:
+    mongodb:
+      uri: mongodb://admin:password@mongodb:27017/bikeroutes?authSource=admin
+      auto-index-creation: true
+  thymeleaf:
+    cache: false
+    prefix: "classpath:/templates/"
+    suffix: ".html"
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.example: DEBUG
+    org.springframework.data.mongodb: INFO

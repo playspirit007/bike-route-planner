@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RavRunner - Fahrrad Routenplaner</title>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        :root {
+            --strava-orange: #FC4C02;
+            --strava-white: #FFFFFF;
+            --strava-dark: #333333;
+            --strava-light-gray: #f7f7f7;
+            --strava-border: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--strava-light-gray);
+            color: var(--strava-dark);
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(120deg, var(--strava-orange), var(--strava-white));
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 28px;
+            color: var(--strava-white);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .logo span {
+            color: var(--strava-orange);
+        }
+
+        .container-main {
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: var(--strava-white);
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .page-title {
+            padding: 20px 30px;
+            margin: 0;
+            background-color: var(--strava-white);
+            border-bottom: 1px solid var(--strava-border);
+            font-weight: 600;
+            color: var(--strava-dark);
+        }
+
+        .content-wrapper {
+            padding: 30px;
+        }
+
+        #map {
+            height: 500px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        }
+
+        .waypoint-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--strava-border);
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-results {
+            position: absolute;
+            z-index: 1000;
+            background: white;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--strava-border);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .search-result-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--strava-border);
+        }
+
+        .search-result-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .btn-primary {
+            background-color: var(--strava-orange);
+            border-color: var(--strava-orange);
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background-color: #e04402;
+            border-color: #e04402;
+        }
+
+        .btn-secondary {
+            background-color: var(--strava-dark);
+            border-color: var(--strava-dark);
+            font-weight: 600;
+        }
+
+        .form-control:focus {
+            border-color: var(--strava-orange);
+            box-shadow: 0 0 0 0.2rem rgba(252, 76, 2, 0.25);
+        }
+
+        .waypoint-card {
+            background-color: var(--strava-light-gray);
+            border: 1px solid var(--strava-border);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .waypoint-card h6 {
+            margin: 0 0 5px 0;
+            color: var(--strava-orange);
+            font-weight: 600;
+        }
+
+        .waypoint-card p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .remove-waypoint {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .remove-waypoint:hover {
+            color: var(--strava-orange);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--strava-dark);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--strava-white);
+            padding: 15px 30px;
+            border-top: 1px solid var(--strava-border);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--strava-orange);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="container">
+        <div class="logo">Rav<span>Runner</span></div>
+    </div>
+</div>
+
+<div class="container-main">
+    <h1 class="page-title">Fahrrad Routenplaner</h1>
+
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="search-container">
+                    <div class="input-group">
+                        <input type="text" id="addressSearch" class="form-control" placeholder="Adresse suchen...">
+                        <button class="btn btn-primary" type="button" onclick="searchAddress()">
+                            Suchen
+                        </button>
+                    </div>
+                    <div id="searchResults" class="search-results"></div>
+                </div>
+                <div id="map"></div>
+            </div>
+            <div class="col-md-4">
+                <form th:action="@{/saveRoute}" th:object="${route}" method="post">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Routenname</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Beschreibung</label>
+                        <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5>Wegpunkte</h5>
+                        <div id="waypointList" class="waypoint-list mb-3">
+                            <div class="welcome-message">
+                                Klicken Sie auf die Karte oder suchen Sie nach einer Adresse, um Wegpunkte hinzuzufügen
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="addWaypoint()">
+                                Wegpunkt hinzufügen
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearAllWaypoints()">
+                                Alle löschen
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-success">Route speichern</button>
+                        <a href="/routes" class="btn btn-secondary">Gespeicherte Routen</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value" id="totalDistance">0 km</div>
+            <div class="stat-label">Gesamtstrecke</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="waypointCount">0</div>
+            <div class="stat-label">Wegpunkte</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="estimatedDuration">0 min</div>
+            <div class="stat-label">Geschätzte Dauer</div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script>
+    let map;
+    let markers = [];
+    let searchMarker = null;
+    let polyline = null;
+
+    function initMap() {
+        // Zentrum auf Deutschland
+        map = L.map('map').setView([47.7825, 9.6107], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Klick-Event für Wegpunkte
+        map.on('click', function(e) {
+            addWaypointFromMap(e.latlng.lat, e.latlng.lng);
+        });
+
+        // Enter-Taste für Adresssuche
+        document.getElementById('addressSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchAddress();
+            }
+        });
+
+        // Klick außerhalb schließt Suchergebnisse
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                hideSearchResults();
+            }
+        });
+    }
+
+    function searchAddress() {
+        const query = document.getElementById('addressSearch').value.trim();
+        if (!query) return;
+
+        // Nominatim API für OpenStreetMap
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+            .then(response => response.json())
+            .then(data => {
+                displaySearchResults(data);
+            })
+            .catch(error => {
+                console.error('Fehler bei der Adresssuche:', error);
+                alert('Fehler bei der Adresssuche');
+            });
+    }
+
+    function displaySearchResults(results) {
+        const resultsContainer = document.getElementById('searchResults');
+        resultsContainer.innerHTML = '';
+
+        if (results.length === 0) {
+            resultsContainer.innerHTML = '<div class="search-result-item">Keine Ergebnisse gefunden</div>';
+        } else {
+            results.forEach(result => {
+                const item = document.createElement('div');
+                item.className = 'search-result-item';
+                item.textContent = result.display_name;
+                item.onclick = () => selectSearchResult(result);
+                resultsContainer.appendChild(item);
+            });
+        }
+
+        resultsContainer.style.display = 'block';
+    }
+
+    function hideSearchResults() {
+        document.getElementById('searchResults').style.display = 'none';
+    }
+
+    function selectSearchResult(result) {
+        const lat = parseFloat(result.lat);
+        const lng = parseFloat(result.lon);
+
+        // Suchmarker zur Karte hinzufügen/aktualisieren
+        if (searchMarker) {
+            map.removeLayer(searchMarker);
+        }
+
+        searchMarker = L.marker([lat, lng])
+            .addTo(map)
+            .bindPopup(`<b>${result.display_name}</b><br><button class="btn btn-primary btn-sm mt-2" onclick="addSearchedLocationAsWaypoint()">Als Wegpunkt hinzufügen</button>`)
+            .openPopup();
+
+        // Karte zentrieren
+        map.setView([lat, lng], 15);
+
+        // Suchfeld aktualisieren
+        document.getElementById('addressSearch').value = result.display_name;
+
+        // Suchergebnisse ausblenden
+        hideSearchResults();
+    }
+
+    function addSearchedLocationAsWaypoint() {
+        if (!searchMarker) return;
+
+        const latlng = searchMarker.getLatLng();
+        const name = prompt('Name für den Wegpunkt:', document.getElementById('addressSearch').value.split(',')[0]);
+
+        if (name) {
+            addWaypointFromMap(latlng.lat, latlng.lng, name);
+
+            // Suchmarker entfernen
+            map.removeLayer(searchMarker);
+            searchMarker = null;
+
+            // Suchfeld leeren
+            document.getElementById('addressSearch').value = '';
+        }
+    }
+
+    function addWaypoint() {
+        const lat = prompt('Breitengrad:');
+        const lng = prompt('Längengrad:');
+        const name = prompt('Name des Wegpunkts:');
+
+        if (lat && lng && name) {
+            addWaypointFromMap(parseFloat(lat), parseFloat(lng), name);
+        }
+    }
+
+    function addWaypointFromMap(lat, lng, name = `Wegpunkt ${markers.length + 1}`) {
+        // Marker zur Karte hinzufügen
+        const marker = L.marker([lat, lng]).addTo(map)
+            .bindPopup(name);
+        markers.push(marker);
+
+        // Zur Liste hinzufügen
+        const waypointList = document.getElementById('waypointList');
+
+        // Entferne Willkommensnachricht, falls vorhanden
+        const welcomeMsg = waypointList.querySelector('.welcome-message');
+        if (welcomeMsg) {
+            welcomeMsg.remove();
+        }
+
+        const waypointItem = document.createElement('div');
+        waypointItem.className = 'waypoint-card';
+        waypointItem.innerHTML = `
+                <button type="button" class="remove-waypoint" onclick="removeWaypoint(${markers.length-1})">×</button>
+                <h6>${name}</h6>
+                <p>Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}</p>
+                <input type="hidden" name="waypoints[${markers.length-1}].latitude" value="${lat}">
+                <input type="hidden" name="waypoints[${markers.length-1}].longitude" value="${lng}">
+                <input type="hidden" name="waypoints[${markers.length-1}].name" value="${name}">
+            `;
+        waypointList.appendChild(waypointItem);
+
+        // Aktualisiere Statistik
+        updateStats();
+
+        // Zeichne Route neu
+        updateRouteLine();
+    }
+
+    function removeWaypoint(index) {
+        // Entferne Marker von der Karte
+        if (markers[index]) {
+            map.removeLayer(markers[index]);
+            markers.splice(index, 1);
+        }
+
+        // Aktualisiere die Wegpunktliste
+        refreshWaypointList();
+
+        // Aktualisiere Statistik
+        updateStats();
+
+        // Zeichne Route neu
+        updateRouteLine();
+    }
+
+    function refreshWaypointList() {
+        const waypointList = document.getElementById('waypointList');
+        waypointList.innerHTML = '';
+
+        if (markers.length === 0) {
+            waypointList.innerHTML = '<div class="welcome-message">Klicken Sie auf die Karte oder suchen Sie nach einer Adresse, um Wegpunkte hinzuzufügen</div>';
+            return;
+        }
+
+        markers.forEach((marker, index) => {
+            const latlng = marker.getLatLng();
+            const name = marker.getPopup().getContent();
+
+            const waypointItem = document.createElement('div');
+            waypointItem.className = 'waypoint-card';
+            waypointItem.innerHTML = `
+                    <button type="button" class="remove-waypoint" onclick="removeWaypoint(${index})">×</button>
+                    <h6>${name}</h6>
+                    <p>Lat: ${latlng.lat.toFixed(6)}, Lng: ${latlng.lng.toFixed(6)}</p>
+                    <input type="hidden" name="waypoints[${index}].latitude" value="${latlng.lat}">
+                    <input type="hidden" name="waypoints[${index}].longitude" value="${latlng.lng}">
+                    <input type="hidden" name="waypoints[${index}].name" value="${name}">
+                `;
+            waypointList.appendChild(waypointItem);
+        });
+    }
+
+    function clearAllWaypoints() {
+        if (confirm('Möchten Sie wirklich alle Wegpunkte löschen?')) {
+            // Entferne alle Marker von der Karte
+            markers.forEach(marker => {
+                map.removeLayer(marker);
+            });
+            markers = [];
+
+            // Aktualisiere die Wegpunktliste
+            refreshWaypointList();
+
+            // Entferne Routenlinie
+            if (polyline) {
+                map.removeLayer(polyline);
+                polyline = null;
+            }
+
+            // Aktualisiere Statistik
+            updateStats();
+        }
+    }
+
+    function updateRouteLine() {
+        // Entferne vorhandene Linie
+        if (polyline) {
+            map.removeLayer(polyline);
+        }
+
+        // Zeichne neue Linie, wenn mindestens 2 Wegpunkte vorhanden sind
+        if (markers.length >= 2) {
+            const latlngs = markers.map(marker => marker.getLatLng());
+            polyline = L.polyline(latlngs, {color: '#FC4C02', weight: 4}).addTo(map);
+        }
+    }
+
+    function updateStats() {
+        document.getElementById('waypointCount').textContent = markers.length;
+
+        // Berechne Gesamtstrecke (vereinfacht)
+        let totalDistance = 0;
+        if (markers.length >= 2) {
+            for (let i = 1; i < markers.length; i++) {
+                const prevLatLng = markers[i-1].getLatLng();
+                const currLatLng = markers[i].getLatLng();
+                totalDistance += calculateDistance(
+                    prevLatLng.lat, prevLatLng.lng,
+                    currLatLng.lat, currLatLng.lng
+                );
+            }
+        }
+        document.getElementById('totalDistance').textContent = totalDistance.toFixed(1) + ' km';
+
+        // Geschätzte Dauer berechnen (Durchschnittsgeschwindigkeit 18 km/h)
+        const estimatedMinutes = Math.round((totalDistance / 18) * 60);
+        document.getElementById('estimatedDuration').textContent = estimatedMinutes + ' min';
+    }
+
+    // Hilfsfunktion zur Entfernungsberechnung (Haversine-Formel)
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Erdradius in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    // Karte initialisieren
+    document.addEventListener('DOMContentLoaded', initMap);
+</script>
+
+<!-- Leaflet CSS & JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</body>
+</html>

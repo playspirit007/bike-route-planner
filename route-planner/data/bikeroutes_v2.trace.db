@@ -1,0 +1,167 @@
+2025-10-23 18:58:22.271902+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 18:58:22.279202+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 18:58:22.280292+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:01:13.911747+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "ROUTE" nicht gefunden
+Table "ROUTE" not found; SQL statement:
+SELECT * FROM ROUTE [42102-224]
+2025-10-23 19:01:18.030070+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "ROUTE" nicht gefunden
+Table "ROUTE" not found; SQL statement:
+SELECT * 
+FROM ROUTE [42102-224]
+2025-10-23 19:01:48.386614+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT * \000d\000aFROM ROUTES\000d\000a\000d\000a[*]SELECT *\000d\000aFROM WAYPOINT"
+Syntax error in SQL statement "SELECT * \000d\000aFROM ROUTES\000d\000a\000d\000a[*]SELECT *\000d\000aFROM WAYPOINT"; SQL statement:
+SELECT * 
+FROM ROUTES
+
+SELECT *
+FROM WAYPOINT [42000-224]
+2025-10-23 19:01:57.217734+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT * \000d\000aFROM ROUTES\000d\000a\000d\000a[*]SELECT *\000d\000aFROM WAYPOINTS"
+Syntax error in SQL statement "SELECT * \000d\000aFROM ROUTES\000d\000a\000d\000a[*]SELECT *\000d\000aFROM WAYPOINTS"; SQL statement:
+SELECT * 
+FROM ROUTES
+
+SELECT *
+FROM WAYPOINTS [42000-224]
+2025-10-23 19:02:29.789665+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "ROUTE" nicht gefunden
+Table "ROUTE" not found; SQL statement:
+SELECT r.ID as ROUTE_ID, r.NAME as ROUTENNAME, w.ID as WEGPUNKT_ID, w.NAME as WEGPUNKT_NAME, w.LATITUDE, w.LONGITUDE
+FROM ROUTE r 
+LEFT JOIN WAYPOINT w ON r.ID = w.ROUTE_ID
+ORDER BY r.ID, w.ID [42102-224]
+2025-10-23 19:02:43.440909+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT * \000d\000aFROM ROUTES\000d\000a\000d\000a[*]SELECT *\000d\000aFROM WAYPOINTS \000d\000a\000d\000aSELECT r.ID as ROUTE_ID, r.NAME as ROUTENNAME, w.ID as WEGPUNKT_ID, w.NAME as WEGPUNKT_NAME, w.LATITUDE, w.LONGITUDE\000d\000aFROM ROUTE r \000d\000aLEFT JOIN WAYPOINT w ON r.ID = w.ROUTE_ID\000d\000aORDER BY r.ID, w.ID"
+Syntax error in SQL statement "SELECT * \000d\000aFROM ROUTES\000d\000a\000d\000a[*]SELECT *\000d\000aFROM WAYPOINTS \000d\000a\000d\000aSELECT r.ID as ROUTE_ID, r.NAME as ROUTENNAME, w.ID as WEGPUNKT_ID, w.NAME as WEGPUNKT_NAME, w.LATITUDE, w.LONGITUDE\000d\000aFROM ROUTE r \000d\000aLEFT JOIN WAYPOINT w ON r.ID = w.ROUTE_ID\000d\000aORDER BY r.ID, w.ID"; SQL statement:
+SELECT * 
+FROM ROUTES
+
+SELECT *
+FROM WAYPOINTS 
+
+SELECT r.ID as ROUTE_ID, r.NAME as ROUTENNAME, w.ID as WEGPUNKT_ID, w.NAME as WEGPUNKT_NAME, w.LATITUDE, w.LONGITUDE
+FROM ROUTE r 
+LEFT JOIN WAYPOINT w ON r.ID = w.ROUTE_ID
+ORDER BY r.ID, w.ID [42000-224]
+2025-10-23 19:02:45.094558+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT * \000d\000aFROM ROUTES\000d\000a\000d\000a[*]SELECT *\000d\000aFROM WAYPOINTS"
+Syntax error in SQL statement "SELECT * \000d\000aFROM ROUTES\000d\000a\000d\000a[*]SELECT *\000d\000aFROM WAYPOINTS"; SQL statement:
+SELECT * 
+FROM ROUTES
+
+SELECT *
+FROM WAYPOINTS [42000-224]
+2025-10-23 19:02:49.133980+02:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "[*]ROUTES \000d\000a\000d\000aSELECT r.ID as ROUTE_ID, r.NAME as ROUTENNAME, w.ID as WEGPUNKT_ID, w.NAME as WEGPUNKT_NAME, w.LATITUDE, w.LONGITUDE\000d\000aFROM ROUTE r \000d\000aLEFT JOIN WAYPOINT w ON r.ID = w.ROUTE_ID\000d\000aORDER BY r.ID, w.ID"; erwartet "ROLLBACK, REVOKE, RUNSCRIPT, RELEASE, REFRESH"
+Syntax error in SQL statement "[*]ROUTES \000d\000a\000d\000aSELECT r.ID as ROUTE_ID, r.NAME as ROUTENNAME, w.ID as WEGPUNKT_ID, w.NAME as WEGPUNKT_NAME, w.LATITUDE, w.LONGITUDE\000d\000aFROM ROUTE r \000d\000aLEFT JOIN WAYPOINT w ON r.ID = w.ROUTE_ID\000d\000aORDER BY r.ID, w.ID"; expected "ROLLBACK, REVOKE, RUNSCRIPT, RELEASE, REFRESH"; SQL statement:
+ROUTES 
+
+SELECT r.ID as ROUTE_ID, r.NAME as ROUTENNAME, w.ID as WEGPUNKT_ID, w.NAME as WEGPUNKT_NAME, w.LATITUDE, w.LONGITUDE
+FROM ROUTE r 
+LEFT JOIN WAYPOINT w ON r.ID = w.ROUTE_ID
+ORDER BY r.ID, w.ID [42001-224]
+2025-10-23 19:23:23.199538+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:23:23.205771+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:23:23.206776+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:29:56.942986+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:29:56.954215+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:29:56.954215+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:33:00.734756+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:33:00.735812+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:33:00.735812+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:34:34.584982+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:34:34.595001+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:34:34.596506+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 19:34:34.599846+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 20:32:55.386394+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 20:32:55.396850+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 20:32:55.397850+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 20:32:55.399083+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 20:32:55.399083+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 21:01:15.208598+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 21:01:15.230634+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 21:01:15.234145+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 21:20:44.099873+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 21:20:44.109135+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 21:20:44.109135+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-23 21:20:44.110297+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-24 10:39:10.823013+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-24 10:39:10.833119+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-24 10:39:10.834185+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-24 10:39:10.834185+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-24 10:58:15.451770+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-24 10:58:15.459963+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]
+2025-10-24 10:58:15.459963+02:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Das Objekt wurde bereits geschlossen
+The object is already closed [90007-224]

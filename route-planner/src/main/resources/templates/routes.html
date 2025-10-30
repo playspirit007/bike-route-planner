@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gespeicherte Routen</title>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Gespeicherte Routen</h1>
+    <a href="/" class="btn btn-primary mb-3">Neue Route erstellen</a>
+
+    <div th:if="${routes.empty}">
+        <div class="alert alert-info">
+            📝 Noch keine Routen gespeichert. Erstelle deine erste Route!
+        </div>
+    </div>
+
+    <div class="row">
+        <div th:each="route : ${routes}" class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${route.name}">Routenname</h5>
+                    <p class="card-text" th:text="${route.description}">Beschreibung</p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Wegpunkte: <span th:text="${route.waypoints.size()}">0</span>
+                        </small>
+                    </p>
+                    <div class="btn-group" role="group">
+                        <a th:href="@{/route/{id}(id=${route.id})}" class="btn btn-outline-primary btn-sm">
+                            Route anzeigen
+                        </a>
+                        <!-- LÖSCH-BUTTON -->
+                        <form th:action="@{/route/{id}/delete(id=${route.id})}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-outline-danger btn-sm"
+                                    onclick="return confirm('Route wirklich löschen?')">
+                                🗑️ Löschen
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
