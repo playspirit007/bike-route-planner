@@ -19,7 +19,6 @@ public class RouteController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("route", new Route());
         return "index";
     }
 
