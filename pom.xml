@@ -1,3 +1,4 @@
+cat > pom.xml << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -20,6 +21,7 @@
     
     <properties>
         <java.version>17</java.version>
+        <start-class>com.example.BikeRouteApplication</start-class>
     </properties>
     
     <dependencies>
@@ -32,6 +34,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
     </dependencies>
     
     <build>
@@ -39,6 +46,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.example.BikeRouteApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>
